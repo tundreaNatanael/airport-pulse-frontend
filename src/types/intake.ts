@@ -1,12 +1,15 @@
-export type TransportIntentOption =
-  | 'taxi'
-  | 'rideshare'
-  | 'public-transport'
-  | 'parking'
-  | 'other'
+export type LuggageType = 'nothing' | 'in_hand' | 'regular' | 'more'
 
-export interface IntakeDraft {
-  flightDesignator?: string
-  transportIntent?: TransportIntentOption
-  passengerCount?: number
+export interface PassengerIntakePayload {
+  flightDesignator: string | null
+  luggageType: LuggageType
+  luggageCount: number | null
+  companionsCount: number | null
+}
+
+export interface PassengerIntakeDraft {
+  flightDesignator: string | null
+  luggageType: LuggageType | null
+  luggageCount: number | null
+  companionsCount: number | null
 }
