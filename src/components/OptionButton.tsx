@@ -16,10 +16,10 @@ export function OptionButton({
   ...buttonProps
 }: OptionButtonProps) {
   const base =
-    'w-full rounded-2xl border px-4 py-4 text-left transition focus:outline-none focus:ring-2 focus:ring-runway-400 disabled:cursor-not-allowed disabled:opacity-60 flex items-center gap-3'
+    'w-full rounded-2xl border px-4 py-4 text-left transition focus:outline-none focus:ring-2 focus:ring-accent/50 disabled:cursor-not-allowed disabled:opacity-60 flex items-center gap-3'
   const tone = selected
-    ? 'border-runway-400 bg-runway-400/10 text-runway-50 shadow-glow'
-    : 'border-slate-700 bg-slate-900/70 text-slate-100 hover:border-runway-400 hover:bg-slate-800/90'
+    ? 'border-primary bg-primary/10 text-text shadow-glow'
+    : 'border-secondary/60 bg-background/90 text-text hover:border-accent hover:bg-secondary/18'
   const classes = [base, tone, className].filter(Boolean).join(' ')
 
   return (
@@ -29,11 +29,11 @@ export function OptionButton({
       className={classes}
       {...buttonProps}
     >
-      {leading ? <span className="text-lg text-runway-100">{leading}</span> : null}
+      {leading ? <span className="text-lg text-accent">{leading}</span> : null}
       <span className="flex flex-col">
         <span className="text-base font-semibold leading-tight">{label}</span>
         {description ? (
-          <span className="mt-1 text-xs text-slate-300">{description}</span>
+          <span className="mt-1 text-xs text-text/65">{description}</span>
         ) : null}
       </span>
     </button>

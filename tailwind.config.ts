@@ -5,17 +5,31 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        runway: {
-          50: '#f2f8ff',
-          100: '#dceeff',
-          400: '#5aa4ff',
-          500: '#2f8dff',
-          700: '#1f5fb0',
-          900: '#0b1d36',
-        },
+        text: '#0e0916',
+        background: '#f8f6fb',
+        primary: '#7b54ba',
+        secondary: '#d494cd',
+        accent: '#cb7dae',
+      },
+      fontSize: {
+        sm: '0.750rem',
+        base: '1rem',
+        xl: '1.333rem',
+        '2xl': '1.777rem',
+        '3xl': '2.369rem',
+        '4xl': '3.158rem',
+        '5xl': '4.210rem',
+      },
+      fontFamily: {
+        heading: ['Inter', 'sans-serif'],
+        body: ['Inter', 'sans-serif'],
+      },
+      fontWeight: {
+        normal: '400',
+        bold: '700',
       },
       boxShadow: {
-        glow: '0 10px 35px rgba(47, 141, 255, 0.25)',
+        glow: '0 10px 35px rgba(123, 84, 186, 0.28)',
       },
     },
   },

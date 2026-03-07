@@ -12,7 +12,7 @@ export function ConfirmationPage() {
       />
       <Link
         to="/"
-        className="mt-4 inline-flex w-full items-center justify-center rounded-xl border border-runway-400 px-4 py-3 text-sm font-semibold text-runway-100 transition hover:bg-runway-500/10"
+        className="mt-4 inline-flex w-full items-center justify-center rounded-xl border border-secondary px-4 py-3 text-sm font-semibold text-text transition hover:border-accent hover:bg-secondary/15"
       >
         Back to intake
       </Link>

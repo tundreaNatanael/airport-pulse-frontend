@@ -9,14 +9,14 @@ export function ProgressHeader({ currentStep, totalSteps }: ProgressHeaderProps)
 
   return (
     <div className="mb-4 flex items-center gap-3">
-      <div className="flex-1 overflow-hidden rounded-full bg-slate-800/80">
+      <div className="flex-1 overflow-hidden rounded-full bg-secondary/35">
         <div
-          className="h-2 rounded-full bg-runway-500 transition-[width]"
+          className="h-2 rounded-full bg-primary transition-[width]"
           style={{ width: `${percent}%` }}
           aria-hidden
         />
       </div>
-      <div className="text-xs font-semibold uppercase tracking-wide text-slate-300">
+      <div className="text-xs font-semibold uppercase tracking-wide text-text/70">
         Step {clampedStep}/{totalSteps}
       </div>
     </div>

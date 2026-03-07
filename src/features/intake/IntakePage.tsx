@@ -219,7 +219,7 @@ export function IntakePage() {
       <button
         type="button"
         onClick={goBack}
-        className="mb-2 inline-flex items-center gap-2 text-sm font-semibold text-runway-100 transition hover:text-runway-50"
+        className="mb-2 inline-flex items-center gap-2 text-sm font-semibold text-accent transition hover:text-primary"
       >
         <span aria-hidden>←</span> Back
       </button>
@@ -235,13 +235,13 @@ export function IntakePage() {
         subtitle="Enter your flight tracker so ground teams can align."
       >
         {renderBack()}
-        <label className="block text-sm text-slate-200">
+        <label className="block text-sm text-text/90">
           Flight tracker
           <input
             type="text"
             inputMode="text"
             autoFocus
-            className="mt-2 w-full rounded-xl border border-slate-700 bg-slate-900/70 px-4 py-3 text-base font-semibold text-slate-50 placeholder:text-slate-500 focus:border-runway-400 focus:outline-none focus:ring-2 focus:ring-runway-400"
+            className="mt-2 w-full rounded-xl border border-secondary/70 bg-background/90 px-4 py-3 text-base font-semibold text-text placeholder:text-text/45 focus:border-primary focus:outline-none focus:ring-2 focus:ring-accent/50"
             placeholder="e.g. QR 132, DL 404"
             value={flightInput}
             onChange={(e) => setFlightInput(e.target.value)}
@@ -252,7 +252,7 @@ export function IntakePage() {
             type="button"
             onClick={confirmFlight}
             disabled={!canContinue}
-            className="inline-flex items-center justify-center rounded-xl bg-runway-500 px-4 py-3 text-base font-semibold text-white transition hover:bg-runway-400 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-3 text-base font-semibold text-background transition hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50"
           >
             Continue
           </button>
@@ -260,7 +260,7 @@ export function IntakePage() {
             <button
               type="button"
               onClick={skipFlight}
-              className="inline-flex items-center justify-center rounded-xl border border-slate-700 px-4 py-3 text-sm font-semibold text-slate-200 transition hover:border-runway-400 hover:text-runway-50"
+              className="inline-flex items-center justify-center rounded-xl border border-secondary px-4 py-3 text-sm font-semibold text-text transition hover:border-accent hover:bg-secondary/15 hover:text-accent"
             >
               Skip for now
             </button>
@@ -308,7 +308,7 @@ export function IntakePage() {
         </div>
 
         {moreSelected ? (
-          <div className="space-y-2 rounded-xl border border-slate-700 bg-slate-900/60 p-3">
+          <div className="space-y-2 rounded-xl border border-secondary/70 bg-secondary/15 p-3">
             <NumericStepper
               value={luggageCount}
               min={1}
@@ -318,7 +318,7 @@ export function IntakePage() {
             <button
               type="button"
               onClick={confirmLuggageCount}
-              className="inline-flex w-full items-center justify-center rounded-xl bg-runway-500 px-4 py-3 text-base font-semibold text-white transition hover:bg-runway-400"
+              className="inline-flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-base font-semibold text-background transition hover:bg-accent"
             >
               Continue
             </button>
@@ -355,7 +355,7 @@ export function IntakePage() {
         </div>
 
         {withGroup ? (
-          <div className="space-y-2 rounded-xl border border-slate-700 bg-slate-900/60 p-3">
+          <div className="space-y-2 rounded-xl border border-secondary/70 bg-secondary/15 p-3">
             <NumericStepper
               value={companionsCount}
               min={1}
@@ -368,7 +368,7 @@ export function IntakePage() {
             <button
               type="button"
               onClick={handleCompanionCount}
-              className="inline-flex w-full items-center justify-center rounded-xl bg-runway-500 px-4 py-3 text-base font-semibold text-white transition hover:bg-runway-400"
+              className="inline-flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-base font-semibold text-background transition hover:bg-accent"
             >
               Send response
             </button>
@@ -380,21 +380,21 @@ export function IntakePage() {
 
   const renderSubmitting = () => (
     <QuestionCard title="Sending..." subtitle="Just a moment while we deliver your intake.">
-      <p className="text-sm text-slate-300">Hang tight, this should only take a second.</p>
-      <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-slate-800">
-        <div className="h-full w-1/2 animate-pulse rounded-full bg-runway-500" />
+      <p className="text-sm text-text/70">Hang tight, this should only take a second.</p>
+      <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-secondary/35">
+        <div className="h-full w-1/2 animate-pulse rounded-full bg-primary" />
       </div>
     </QuestionCard>
   )
 
   const renderError = () => (
     <QuestionCard title="Didn’t go through" subtitle="We hit a snag delivering your response.">
-      <p className="text-sm text-slate-300">{errorMessage ?? 'Unknown error'}</p>
+      <p className="text-sm text-text/70">{errorMessage ?? 'Unknown error'}</p>
       <div className="flex flex-col gap-2 pt-2">
         <button
           type="button"
           onClick={retrySubmit}
-          className="inline-flex items-center justify-center rounded-xl bg-runway-500 px-4 py-3 text-base font-semibold text-white transition hover:bg-runway-400 disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-3 text-base font-semibold text-background transition hover:bg-accent disabled:cursor-not-allowed disabled:opacity-60"
           disabled={loading}
         >
           Retry
@@ -402,7 +402,7 @@ export function IntakePage() {
         <button
           type="button"
           onClick={restart}
-          className="inline-flex items-center justify-center rounded-xl border border-slate-700 px-4 py-3 text-sm font-semibold text-slate-200 transition hover:border-runway-400 hover:text-runway-50"
+          className="inline-flex items-center justify-center rounded-xl border border-secondary px-4 py-3 text-sm font-semibold text-text transition hover:border-accent hover:bg-secondary/15 hover:text-accent"
         >
           Start over
         </button>
