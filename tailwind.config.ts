@@ -5,12 +5,13 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        text: '#0e0916',
-        background: '#f8f6fb',
-        primary: '#7b54ba',
-        secondary: '#d494cd',
-        accent: '#cb7dae',
+      'text': '#060606',
+      'background': '#fbfcfb',
+      'primary': '#6ca66e',
+      'secondary': '#a6d5a8',
+      'accent': '#6bca6f',
       },
+
       fontSize: {
         sm: '0.750rem',
         base: '1rem',
