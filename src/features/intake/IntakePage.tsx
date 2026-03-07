@@ -432,6 +432,11 @@ export function IntakePage() {
   return (
     <ScreenContainer>
       <div className="flex flex-col">
+        <div className="mb-3">
+          <h1 className="text-sm font-semibold tracking-wide text-primary">
+            AeroPulse for Passengers
+          </h1>
+        </div>
         <ProgressHeader
           currentStep={status === 'done' ? TOTAL_STEPS : step + 1}
           totalSteps={TOTAL_STEPS}
