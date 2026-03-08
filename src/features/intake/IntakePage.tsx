@@ -1,7 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useMutation } from '@apollo/client/react'
+import { useLazyQuery, useMutation } from '@apollo/client/react'
 import { OptionButton } from '../../components/OptionButton'
 import { QuestionCard } from '../../components/QuestionCard'
 import { ScreenContainer } from '../../components/ScreenContainer'
@@ -10,6 +10,9 @@ import { NumericStepper } from '../../components/NumericStepper'
 import { ProgressHeader } from '../../components/ProgressHeader'
 import { ConfirmationScreen } from './ConfirmationScreen'
 import { SUBMIT_PASSENGER_INTAKE } from '../../graphql/mutations'
+import { GET_FLIGHT_DETAILS } from '../../graphql/queries'
+import { FlightDetailsBadge } from './FlightDetailsBadge'
+import type { FlightDetails } from '../../types/flight'
 import type {
   LuggageType,
   PassengerIntakeDraft,
@@ -27,6 +30,14 @@ type SubmitResponse = {
 
 type SubmitVariables = {
   input: PassengerIntakePayload
+}
+
+type FlightDetailsResponse = {
+  flightDetails: FlightDetails | null
+}
+
+type FlightDetailsVariables = {
+  flightDesignator: string
 }
 
 const TOTAL_STEPS = 3
@@ -70,6 +81,10 @@ export function IntakePage() {
   const [submitIntake, { loading }] = useMutation<SubmitResponse, SubmitVariables>(
     SUBMIT_PASSENGER_INTAKE,
   )
+  const [loadFlightDetails, { data: flightData, loading: flightLoading, error: flightError }] =
+    useLazyQuery<FlightDetailsResponse, FlightDetailsVariables>(GET_FLIGHT_DETAILS, {
+      fetchPolicy: 'network-only',
+    })
 
   const goToStep = (next: Step, dir: 1 | -1) => {
     setDirection(dir)
@@ -197,6 +212,19 @@ export function IntakePage() {
     if (!lastPayload) return
     submitPayload(lastPayload)
   }
+
+  const normalizedFlightInput = flightInput.trim()
+  const flightDetails = normalizedFlightInput ? flightData?.flightDetails ?? null : null
+
+  useEffect(() => {
+    if (!normalizedFlightInput) return
+
+    const handle = setTimeout(() => {
+      loadFlightDetails({ variables: { flightDesignator: normalizedFlightInput } })
+    }, 400)
+
+    return () => clearTimeout(handle)
+  }, [loadFlightDetails, normalizedFlightInput])
 
   const restart = () => {
     setDraft({
@@ -437,6 +465,15 @@ export function IntakePage() {
             AeroPulse for Passengers
           </h1>
         </div>
+        {normalizedFlightInput.length > 0 ? (
+          <FlightDetailsBadge
+            flightDesignator={normalizedFlightInput}
+            details={flightDetails}
+            loading={flightLoading}
+            errorMessage={flightError?.message}
+            showConnections={status === 'done'}
+          />
+        ) : null}
         <ProgressHeader
           currentStep={status === 'done' ? TOTAL_STEPS : step + 1}
           totalSteps={TOTAL_STEPS}
