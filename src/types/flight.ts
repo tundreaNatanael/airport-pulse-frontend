@@ -10,6 +10,7 @@ export interface FlightConnections {
   boltServices: string | null
   uberServices: string | null
   publicTransport: PublicTransportOptions | null
+  public_transport?: PublicTransportOptions | null
 }
 
 export interface FlightDetails {

@@ -43,7 +43,7 @@ const buildConnections = (connections: FlightConnections | null | undefined) => 
   if (connections.boltServices) items.push({ label: 'Bolt', href: connections.boltServices })
   if (connections.uberServices) items.push({ label: 'Uber', href: connections.uberServices })
 
-  const publicTransport = connections.publicTransport
+  const publicTransport = connections.publicTransport ?? connections.public_transport
   if (publicTransport?.taxi) items.push({ label: 'Taxi', href: publicTransport.taxi })
   if (publicTransport?.buses) items.push({ label: 'Buses', href: publicTransport.buses })
   if (publicTransport?.metro) items.push({ label: 'Metro', href: publicTransport.metro })

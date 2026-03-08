@@ -5,6 +5,7 @@ export interface PassengerIntakePayload {
   luggageType: LuggageType
   luggageCount: number | null
   companionsCount: number | null
+  connectionSelected: string | null
 }
 
 export interface PassengerIntakeDraft {
@@ -12,4 +13,5 @@ export interface PassengerIntakeDraft {
   luggageType: LuggageType | null
   luggageCount: number | null
   companionsCount: number | null
+  connectionSelected: string | null
 }

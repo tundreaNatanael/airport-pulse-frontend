@@ -19,7 +19,7 @@ import type {
   PassengerIntakePayload,
 } from '../../types/intake'
 
-type Step = 0 | 1 | 2
+type Step = 0 | 1 | 2 | 3
 
 type SubmitResponse = {
   submitPassengerIntake: {
@@ -40,7 +40,13 @@ type FlightDetailsVariables = {
   flightDesignator: string
 }
 
-const TOTAL_STEPS = 3
+type ConnectionOption = {
+  label: string
+  href: string
+  icon: string
+}
+
+const TOTAL_STEPS = 4
 
 const slideVariants = {
   enter: (direction: number) => ({
@@ -66,6 +72,7 @@ export function IntakePage() {
     luggageType: null,
     luggageCount: null,
     companionsCount: null,
+    connectionSelected: null,
   })
   const [flightInput, setFlightInput] = useState(initialFlight ?? '')
   const [luggageCount, setLuggageCount] = useState<number>(2)
@@ -145,22 +152,17 @@ export function IntakePage() {
   }
 
   const handleAlone = () => {
-    setDraft((prev) => ({ ...prev, companionsCount: 0 }))
-    const payload = buildPayload({
-      companionsCount: 0,
-    })
-    if (payload) {
-      submitPayload(payload)
-    }
+    setDraft((prev) => ({ ...prev, companionsCount: 0, connectionSelected: null }))
+    goForward()
   }
 
   const handleCompanionCount = () => {
-    const payload = buildPayload({
+    setDraft((prev) => ({
+      ...prev,
       companionsCount: Math.max(1, companionsCount),
-    })
-    if (payload) {
-      submitPayload(payload)
-    }
+      connectionSelected: null,
+    }))
+    goForward()
   }
 
   const buildPayload = (
@@ -182,6 +184,7 @@ export function IntakePage() {
       luggageType: merged.luggageType,
       luggageCount: merged.luggageCount,
       companionsCount: merged.companionsCount,
+      connectionSelected: merged.connectionSelected ?? null,
     }
   }
 
@@ -226,12 +229,49 @@ export function IntakePage() {
     return () => clearTimeout(handle)
   }, [loadFlightDetails, normalizedFlightInput])
 
+  const connectionOptions: ConnectionOption[] = useMemo(() => {
+    if (!flightDetails?.connections) return []
+    const options: ConnectionOption[] = []
+    const addOption = (label: string, href?: string | null, icon?: string) => {
+      if (!href || href.trim().length === 0) return
+      options.push({ label, href, icon: icon ?? '🚗' })
+    }
+
+    const links = flightDetails.connections
+    const publicTransport = links.publicTransport ?? links.public_transport
+
+    addOption('Bolt', links.boltServices, '🚗')
+    addOption('Uber', links.uberServices, '🚕')
+    addOption('Taxi', publicTransport?.taxi, '🚖')
+    addOption('Buses', publicTransport?.buses, '🚌')
+    addOption('Metro', publicTransport?.metro, '🚇')
+    addOption('Trains', publicTransport?.trains, '🚆')
+    addOption('Rental car', publicTransport?.rental_car, '🚘')
+
+    return options
+  }, [flightDetails])
+
+  const handleConnectionSelect = (option: ConnectionOption | null) => {
+    const selection = option?.label ?? null
+    setDraft((prev) => ({ ...prev, connectionSelected: selection }))
+    const payload = buildPayload({
+      connectionSelected: selection,
+    })
+    if (!payload) return
+
+    if (option?.href) {
+      window.open(option.href, '_blank', 'noreferrer')
+    }
+    submitPayload(payload)
+  }
+
   const restart = () => {
     setDraft({
       flightDesignator: initialFlight,
       luggageType: null,
       luggageCount: null,
       companionsCount: null,
+      connectionSelected: null,
     })
     setFlightInput(initialFlight ?? '')
     setLuggageCount(Math.max(2, 1))
@@ -398,10 +438,56 @@ export function IntakePage() {
               onClick={handleCompanionCount}
               className="inline-flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-base font-semibold text-background transition hover:bg-accent"
             >
-              Send response
+              Continue
             </button>
           </div>
         ) : null}
+      </QuestionCard>
+    )
+  }
+
+  const renderConnectionsCard = () => {
+    const hasOptions = connectionOptions.length > 0
+
+    return (
+      <QuestionCard
+        title="Pick your ride"
+        subtitle="Choose how you plan to leave the airport so teams can route you."
+      >
+        {renderBack()}
+        {hasOptions ? (
+          <div className="grid gap-2 md:grid-cols-2">
+            {connectionOptions.map((option) => (
+              <button
+                key={option.label}
+                type="button"
+                onClick={() => handleConnectionSelect(option)}
+                className="flex w-full items-start gap-3 rounded-xl border border-secondary/70 bg-secondary/15 px-4 py-3 text-left transition hover:border-accent hover:bg-secondary/25"
+              >
+                <span className="text-xl">{option.icon}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-text">{option.label}</p>
+                  <p className="text-[12px] text-text/70 truncate" title={option.href}>
+                    {option.href}
+                  </p>
+                </div>
+              </button>
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-text/70">
+            We do not have transport links for this flight yet. You can still submit your details.
+          </p>
+        )}
+        <div className="pt-3">
+          <button
+            type="button"
+            onClick={() => handleConnectionSelect(null)}
+            className="inline-flex w-full items-center justify-center rounded-xl border border-secondary px-4 py-3 text-sm font-semibold text-text transition hover:border-accent hover:bg-secondary/15 hover:text-accent"
+          >
+            Submit without selecting transport
+          </button>
+        </div>
       </QuestionCard>
     )
   }
@@ -454,7 +540,8 @@ export function IntakePage() {
 
     if (step === 0) return renderFlightCard()
     if (step === 1) return renderLuggageCard()
-    return renderCompanionsCard()
+    if (step === 2) return renderCompanionsCard()
+    return renderConnectionsCard()
   }
 
   return (
