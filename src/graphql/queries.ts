@@ -15,7 +15,7 @@ export const GET_FLIGHT_DETAILS = gql`
       connections {
         boltServices
         uberServices
-        public_transport {
+        publicTransport {
           taxi
           buses
           metro

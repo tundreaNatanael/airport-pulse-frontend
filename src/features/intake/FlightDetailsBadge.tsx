@@ -18,6 +18,23 @@ const formatter = new Intl.DateTimeFormat(undefined, {
 const formatTime = (value?: string | null) =>
   value ? formatter.format(new Date(value)) : 'N/A'
 
+const buildTimeBlock = (
+  actual: string | null | undefined,
+  expected: string | null | undefined,
+) => {
+  const primaryLabel = actual ? 'Actual' : 'Expected'
+  const primaryValue = formatTime(actual ?? expected)
+  const secondary =
+    actual && expected
+      ? {
+          label: 'Expected',
+          value: formatTime(expected),
+        }
+      : null
+
+  return { primaryLabel, primaryValue, secondary }
+}
+
 const buildConnections = (connections: FlightConnections | null | undefined) => {
   if (!connections) return []
 
@@ -26,7 +43,7 @@ const buildConnections = (connections: FlightConnections | null | undefined) => 
   if (connections.boltServices) items.push({ label: 'Bolt', href: connections.boltServices })
   if (connections.uberServices) items.push({ label: 'Uber', href: connections.uberServices })
 
-  const publicTransport = connections.public_transport
+  const publicTransport = connections.publicTransport
   if (publicTransport?.taxi) items.push({ label: 'Taxi', href: publicTransport.taxi })
   if (publicTransport?.buses) items.push({ label: 'Buses', href: publicTransport.buses })
   if (publicTransport?.metro) items.push({ label: 'Metro', href: publicTransport.metro })
@@ -45,6 +62,14 @@ export function FlightDetailsBadge({
   showConnections = false,
 }: FlightDetailsBadgeProps) {
   const connections = buildConnections(details?.connections)
+  const departureTimes = buildTimeBlock(
+    details?.actual_departure_time,
+    details?.expected_departure_time,
+  )
+  const arrivalTimes = buildTimeBlock(
+    details?.actual_arrival_time,
+    details?.expected_arrival_time,
+  )
 
   return (
     <aside className="mb-3 rounded-2xl border border-primary/25 bg-primary/5 px-4 py-3 text-sm shadow-glow">
@@ -83,24 +108,30 @@ export function FlightDetailsBadge({
         <div className="mt-3 grid gap-3 md:grid-cols-3">
           <div className="space-y-1">
             <p className="text-[11px] uppercase tracking-wide text-text/60">Departure</p>
-            <p className="text-sm font-semibold text-text">
-              {details.departure_airport || 'Unknown'}
+            {details.departure_airport ? (
+              <p className="text-sm font-semibold text-text">{details.departure_airport}</p>
+            ) : null}
+            <p className="text-[12px] font-semibold text-text">
+              {departureTimes.primaryLabel}: {departureTimes.primaryValue}
             </p>
-            <p className="text-[12px] text-text/70">ETA: {formatTime(details.expected_departure_time)}</p>
-            {details.actual_departure_time ? (
+            {departureTimes.secondary ? (
               <p className="text-[12px] text-text/70">
-                Actual: {formatTime(details.actual_departure_time)}
+                {departureTimes.secondary.label}: {departureTimes.secondary.value}
               </p>
             ) : null}
           </div>
 
           <div className="space-y-1">
             <p className="text-[11px] uppercase tracking-wide text-text/60">Arrival</p>
-            <p className="text-sm font-semibold text-text">{details.arrival_airport || 'Unknown'}</p>
-            <p className="text-[12px] text-text/70">ETA: {formatTime(details.expected_arrival_time)}</p>
-            {details.actual_arrival_time ? (
+            {details.arrival_airport ? (
+              <p className="text-sm font-semibold text-text">{details.arrival_airport}</p>
+            ) : null}
+            <p className="text-[12px] font-semibold text-text">
+              {arrivalTimes.primaryLabel}: {arrivalTimes.primaryValue}
+            </p>
+            {arrivalTimes.secondary ? (
               <p className="text-[12px] text-text/70">
-                Actual: {formatTime(details.actual_arrival_time)}
+                {arrivalTimes.secondary.label}: {arrivalTimes.secondary.value}
               </p>
             ) : null}
           </div>
