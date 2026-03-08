@@ -252,7 +252,7 @@ export function IntakePage() {
     addOption('Taxi', 'publicTransport.taxi', publicTransport?.taxi, '🚖')
     addOption('Metro', 'publicTransport.metro', publicTransport?.metro, '🚇')
     addOption('Trains', 'publicTransport.trains', publicTransport?.trains, '🚆')
-    addOption('Rental car', 'rentalCar', publicTransport?.rental_car ?? publicTransport?.rentalCar, '🚘')
+    addOption('Rental car', 'rentalCar', publicTransport?.rental_car, '🚘')
 
     return options
   }, [flightDetails])
