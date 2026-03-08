@@ -14,6 +14,7 @@ import { GET_FLIGHT_DETAILS } from '../../graphql/queries'
 import { FlightDetailsBadge } from './FlightDetailsBadge'
 import type { FlightDetails } from '../../types/flight'
 import type {
+  ConnectionChoice,
   LuggageType,
   PassengerIntakeDraft,
   PassengerIntakePayload,
@@ -44,6 +45,7 @@ type ConnectionOption = {
   label: string
   href: string
   icon: string
+  value: ConnectionChoice
 }
 
 const TOTAL_STEPS = 4
@@ -232,27 +234,31 @@ export function IntakePage() {
   const connectionOptions: ConnectionOption[] = useMemo(() => {
     if (!flightDetails?.connections) return []
     const options: ConnectionOption[] = []
-    const addOption = (label: string, href?: string | null, icon?: string) => {
+    const addOption = (
+      label: string,
+      value: ConnectionChoice,
+      href?: string | null,
+      icon?: string,
+    ) => {
       if (!href || href.trim().length === 0) return
-      options.push({ label, href, icon: icon ?? '🚗' })
+      options.push({ label, href, value, icon: icon ?? '🚗' })
     }
 
     const links = flightDetails.connections
     const publicTransport = links.publicTransport ?? links.public_transport
 
-    addOption('Bolt', links.boltServices, '🚗')
-    addOption('Uber', links.uberServices, '🚕')
-    addOption('Taxi', publicTransport?.taxi, '🚖')
-    addOption('Buses', publicTransport?.buses, '🚌')
-    addOption('Metro', publicTransport?.metro, '🚇')
-    addOption('Trains', publicTransport?.trains, '🚆')
-    addOption('Rental car', publicTransport?.rental_car, '🚘')
+    addOption('Bolt', 'boltServices', links.boltServices, '🚗')
+    addOption('Uber', 'uberServices', links.uberServices, '🚕')
+    addOption('Taxi', 'publicTransport.taxi', publicTransport?.taxi, '🚖')
+    addOption('Metro', 'publicTransport.metro', publicTransport?.metro, '🚇')
+    addOption('Trains', 'publicTransport.trains', publicTransport?.trains, '🚆')
+    addOption('Rental car', 'rentalCar', publicTransport?.rental_car ?? publicTransport?.rentalCar, '🚘')
 
     return options
   }, [flightDetails])
 
   const handleConnectionSelect = (option: ConnectionOption | null) => {
-    const selection = option?.label ?? null
+    const selection = option?.value ?? null
     setDraft((prev) => ({ ...prev, connectionSelected: selection }))
     const payload = buildPayload({
       connectionSelected: selection,
